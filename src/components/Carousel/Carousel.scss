@@ -1,0 +1,38 @@
+.Carousel {
+  position: relative;
+
+  &-content {
+    position: relative;
+    display: grid;
+    grid-auto-columns: auto;
+
+    // grid-auto-columns: 15%;
+    // grid-auto-flow: column;
+    // flex-wrap: nowrap;
+    gap: 1rem;
+    height: max-content;
+    overflow: auto;
+    max-width: 100%;
+    padding: 1rem 4rem;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    &.left {
+      left: 1.5rem;
+    }
+    &.right {
+      right: 1.5rem;
+    }
+  }
+}
