@@ -1,4 +1,4 @@
-import { MutableRefObject, useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 
 interface iInitialState {
   lastMouseX: number | undefined;
@@ -6,7 +6,11 @@ interface iInitialState {
   isScrolling: boolean;
 }
 
-export const useCarousel = () => {
+interface iUseCarousel {
+  elementIndexToFocus?: number;
+}
+
+export const useCarousel = ({ elementIndexToFocus }: iUseCarousel) => {
   const contentRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
   const initialState: MutableRefObject<iInitialState> = useRef({
     lastMouseX: undefined,
@@ -17,13 +21,20 @@ export const useCarousel = () => {
   const arrowRightRef: MutableRefObject<HTMLButtonElement | null> =
     useRef(null);
 
+  useEffect(() => {
+    if (!elementIndexToFocus) return;
+    const element = contentRef.current?.children[elementIndexToFocus];
+    if (!contentRef.current || !element) return;
+    element.scrollIntoView();
+  }, [elementIndexToFocus]);
+
   const moveForward = () => {
     const ref = contentRef.current;
     const children = contentRef.current?.children.length;
     if (!children || !ref) return;
 
     contentRef.current?.scrollTo({
-      left: ref.scrollLeft + ref.clientWidth / children,
+      left: ref.scrollLeft + ref.scrollWidth / children,
       behavior: "smooth",
     });
   };
@@ -34,7 +45,7 @@ export const useCarousel = () => {
     if (!children || !ref) return;
 
     contentRef.current?.scrollTo({
-      left: ref.scrollLeft - ref.clientWidth / children,
+      left: ref.scrollLeft - ref.scrollWidth / children,
       behavior: "smooth",
     });
   };

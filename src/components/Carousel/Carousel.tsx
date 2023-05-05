@@ -9,12 +9,14 @@ interface iCarousel {
   children: ReactNode;
   className?: string;
   hideArrows?: boolean;
+  elementIndexToFocus?: number;
 }
 
 export const Carousel: FC<iCarousel> = ({
   children,
   className = "",
   hideArrows = false,
+  elementIndexToFocus,
 }) => {
   const {
     moveBack,
@@ -26,7 +28,7 @@ export const Carousel: FC<iCarousel> = ({
     handleScroll,
     arrowLeftRef,
     arrowRightRef,
-  } = useCarousel();
+  } = useCarousel({ elementIndexToFocus });
   return (
     <div className={`Carousel ${className}`}>
       {!hideArrows && (

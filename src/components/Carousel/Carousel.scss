@@ -1,19 +1,15 @@
 .Carousel {
   position: relative;
+  overflow: hidden;
+  max-width: 100%;
+  padding: 1rem 4rem;
 
   &-content {
     position: relative;
-    display: grid;
-    grid-auto-columns: auto;
-
-    // grid-auto-columns: 15%;
-    // grid-auto-flow: column;
-    // flex-wrap: nowrap;
+    display: flex;
     gap: 1rem;
-    height: max-content;
-    overflow: auto;
-    max-width: 100%;
-    padding: 1rem 4rem;
+    min-height: 200px;
+    overflow-x: scroll;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -28,6 +24,7 @@
     outline: none;
     background: none;
     cursor: pointer;
+    line-height: 1;
     &.left {
       left: 1.5rem;
     }
