@@ -5,7 +5,7 @@ import "./App.scss";
 function App() {
   return (
     <div className="App">
-      <Carousel elementIndexToFocus={5}>
+      <Carousel elementIndexToFocus={3}>
         <div className="Carousel-item">
           <span className="Carousel-item-num">1</span>
           <img className="Carousel-image" src={bg} alt="image" />

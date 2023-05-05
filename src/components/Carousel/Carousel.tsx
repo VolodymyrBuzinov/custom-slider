@@ -10,6 +10,7 @@ interface iCarousel {
   className?: string;
   hideArrows?: boolean;
   elementIndexToFocus?: number;
+  customArrows?: { leftArrow: ReactNode; rightArrow: ReactNode };
 }
 
 export const Carousel: FC<iCarousel> = ({
@@ -17,6 +18,7 @@ export const Carousel: FC<iCarousel> = ({
   className = "",
   hideArrows = false,
   elementIndexToFocus,
+  customArrows,
 }) => {
   const {
     moveBack,
@@ -37,7 +39,7 @@ export const Carousel: FC<iCarousel> = ({
           className="Carousel-arrow left"
           onClick={moveBack}
         >
-          <ArrowLeft />
+          {!!customArrows?.leftArrow ? customArrows?.leftArrow : <ArrowLeft />}
         </button>
       )}
       {!hideArrows && (
@@ -46,7 +48,11 @@ export const Carousel: FC<iCarousel> = ({
           className="Carousel-arrow right"
           onClick={moveForward}
         >
-          <ArrowRight />
+          {!!customArrows?.rightArrow ? (
+            customArrows?.rightArrow
+          ) : (
+            <ArrowRight />
+          )}
         </button>
       )}
       <div

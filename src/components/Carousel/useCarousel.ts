@@ -23,9 +23,9 @@ export const useCarousel = ({ elementIndexToFocus }: iUseCarousel) => {
 
   useEffect(() => {
     if (!elementIndexToFocus) return;
-    const element = contentRef.current?.children[elementIndexToFocus];
+    const element = contentRef.current?.children[elementIndexToFocus - 1];
     if (!contentRef.current || !element) return;
-    element.scrollIntoView();
+    element.scrollIntoView({ inline: "start" });
   }, [elementIndexToFocus]);
 
   const moveForward = () => {
@@ -88,15 +88,15 @@ export const useCarousel = ({ elementIndexToFocus }: iUseCarousel) => {
     e.stopPropagation();
   };
   return {
+    contentRef,
+    arrowLeftRef,
+    arrowRightRef,
+
     moveBack,
     moveForward,
-    contentRef,
     dragStart,
     mouseUp,
     mouseDown,
     handleScroll,
-
-    arrowLeftRef,
-    arrowRightRef,
   };
 };
