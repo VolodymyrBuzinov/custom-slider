@@ -11,6 +11,8 @@ interface iCarousel {
   hideArrows?: boolean;
   elementIndexToFocus?: number;
   customArrows?: { leftArrow: ReactNode; rightArrow: ReactNode };
+  updateDataCallback?: () => void;
+  infinite?: boolean;
 }
 
 export const Carousel: FC<iCarousel> = ({
@@ -19,6 +21,8 @@ export const Carousel: FC<iCarousel> = ({
   hideArrows = false,
   elementIndexToFocus,
   customArrows,
+  updateDataCallback,
+  infinite = false,
 }) => {
   const {
     moveBack,
@@ -30,7 +34,8 @@ export const Carousel: FC<iCarousel> = ({
     handleScroll,
     arrowLeftRef,
     arrowRightRef,
-  } = useCarousel({ elementIndexToFocus });
+    onScroll,
+  } = useCarousel({ elementIndexToFocus, updateDataCallback, infinite });
   return (
     <div className={`Carousel ${className}`}>
       {!hideArrows && (
@@ -62,6 +67,8 @@ export const Carousel: FC<iCarousel> = ({
         onMouseUp={mouseUp}
         onMouseDown={mouseDown}
         onMouseMove={handleScroll}
+        onMouseLeave={mouseUp}
+        onScroll={onScroll}
       >
         {children}
       </div>

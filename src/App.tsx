@@ -1,47 +1,32 @@
 import { Carousel } from "./components/Carousel/Carousel";
-import bg from "../src/images/image-15.webp";
+import bg1 from "../src/images/image-15.webp";
+import bg2 from "../src/images/image-1.webp";
+import bg3 from "../src/images/image-3.webp";
+import bg4 from "../src/images/image-4.webp";
+import bg5 from "../src/images/image-5.webp";
 import "./App.scss";
 
+const initialData = [
+  { bg: bg1 },
+  { bg: bg2 },
+  { bg: bg3 },
+  { bg: bg4 },
+  { bg: bg5 },
+];
+
 function App() {
+  const fetchCallback = () => {
+    console.log("fetchCallback");
+  };
   return (
     <div className="App">
-      <Carousel elementIndexToFocus={3}>
-        <div className="Carousel-item">
-          <span className="Carousel-item-num">1</span>
-          <img className="Carousel-image" src={bg} alt="image" />
-        </div>
-        <div className="Carousel-item">
-          <span className="Carousel-item-num">2</span>
-          <img className="Carousel-image" src={bg} alt="image" />
-        </div>
-        <div className="Carousel-item">
-          <span className="Carousel-item-num">3</span>
-          <img className="Carousel-image" src={bg} alt="image" />
-        </div>
-        <div className="Carousel-item">
-          <span className="Carousel-item-num">4</span>
-          <img className="Carousel-image" src={bg} alt="image" />
-        </div>
-        <div className="Carousel-item">
-          <span className="Carousel-item-num">5</span>
-          <img className="Carousel-image" src={bg} alt="image" />
-        </div>
-        <div className="Carousel-item">
-          <span className="Carousel-item-num">6</span>
-          <img className="Carousel-image" src={bg} alt="image" />
-        </div>
-        <div className="Carousel-item">
-          <span className="Carousel-item-num">7</span>
-          <img className="Carousel-image" src={bg} alt="image" />
-        </div>
-        <div className="Carousel-item">
-          <span className="Carousel-item-num">8</span>
-          <img className="Carousel-image" src={bg} alt="image" />
-        </div>
-        <div className="Carousel-item">
-          <span className="Carousel-item-num">9</span>
-          <img className="Carousel-image" src={bg} alt="image" />
-        </div>
+      <Carousel updateDataCallback={fetchCallback} infinite>
+        {initialData.map((item, i) => (
+          <div key={i} className="Carousel-item">
+            <span className="Carousel-item-num">{i + 1}</span>
+            <img className="Carousel-image" src={item?.bg} alt="image" />
+          </div>
+        ))}
       </Carousel>
     </div>
   );
