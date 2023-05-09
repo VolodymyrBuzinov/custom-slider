@@ -30,23 +30,39 @@ export const useCarousel = ({
     useRef(null);
   const [initialDataLength, setInitialDataLength] = useState(0);
   const childrenAdded = useRef(false);
+  const timeout: MutableRefObject<ReturnType<typeof setTimeout> | null> =
+    useRef(null);
+
+  useEffect(() => {
+    if (!childrenAdded.current) {
+      const ref = contentRef.current;
+      if (!infinite || !ref || !ref.lastChild) return;
+      ref?.insertBefore(ref.lastChild, ref.firstChild);
+
+      elementIndexToFocus = 1;
+    }
+  }, [infinite]);
 
   useEffect(() => {
     if (!childrenAdded.current) {
       if (!contentRef.current) return;
       setInitialDataLength(contentRef.current.children.length);
-      Array.from(contentRef.current?.children).forEach((child) =>
-        contentRef.current?.appendChild(child.cloneNode(true))
-      );
+      Array.from(contentRef.current?.children).forEach((child) => {
+        contentRef.current?.appendChild(child.cloneNode(true));
+      });
     }
     childrenAdded.current = true;
   });
 
   useEffect(() => {
     if (!elementIndexToFocus) return;
-    const element = contentRef.current?.children[elementIndexToFocus - 1];
+    const element = contentRef.current?.children[elementIndexToFocus];
     if (!contentRef.current || !element) return;
     element.scrollIntoView({ inline: "start" });
+
+    return () => {
+      timeout.current && clearTimeout(timeout.current);
+    };
   }, [elementIndexToFocus]);
 
   const moveForward = () => {
@@ -85,6 +101,7 @@ export const useCarousel = ({
 
   const handleScroll = (e: React.MouseEvent) => {
     const newState = state.current;
+
     if (!newState.isMouseDown || !newState.lastMouseX) return;
 
     if (!newState.isScrolling) newState.isScrolling = true;
@@ -111,19 +128,30 @@ export const useCarousel = ({
     const ref = contentRef?.current;
     if (!ref) return;
     const children = ref.children;
-    const maxLength = initialDataLength * 2;
-    let timeout;
 
-    timeout && clearTimeout(timeout);
+    timeout.current && clearTimeout(timeout.current);
+
+    const newArrr = Array.from(children).slice(0, initialDataLength);
+
+    if (ref?.scrollLeft <= 0) {
+      ref.replaceChildren(...newArrr);
+      return (timeout.current = setTimeout(() => {
+        ref.lastChild && ref.prepend(ref.lastChild?.cloneNode(true));
+        ref.scrollTo({
+          left: ref?.children[0]?.scrollWidth,
+        });
+      }, 10));
+    }
 
     if (ref?.scrollLeft < ref.scrollWidth - ref.clientWidth) return;
 
-    if (!infinite && updateDataCallback) return updateDataCallback();
+    if (updateDataCallback && !infinite) return updateDataCallback();
 
     const newArr = Array.from(children).slice(-initialDataLength);
 
     ref.replaceChildren(...newArr);
-    timeout = setTimeout(() => {
+
+    timeout.current = setTimeout(() => {
       ref.appendChild(children[0].cloneNode(true));
     }, 10);
   };
