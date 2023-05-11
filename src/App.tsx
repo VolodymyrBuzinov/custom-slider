@@ -18,6 +18,7 @@ function App() {
   const fetchCallback = () => {
     console.log("fetchCallback");
   };
+
   return (
     <div className="App">
       <Carousel updateDataCallback={fetchCallback} infinite>

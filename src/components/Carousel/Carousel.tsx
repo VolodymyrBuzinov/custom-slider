@@ -6,23 +6,25 @@ import "../Icons.scss";
 import "./Carousel.scss";
 
 interface iCarousel {
-  children: ReactNode;
+  children: ReactNode[];
   className?: string;
   hideArrows?: boolean;
-  elementIndexToFocus?: number;
+  currentSlideIndex?: number;
   customArrows?: { leftArrow: ReactNode; rightArrow: ReactNode };
   updateDataCallback?: () => void;
   infinite?: boolean;
+  itemsInSlide?: number;
 }
 
 export const Carousel: FC<iCarousel> = ({
   children,
   className = "",
   hideArrows = false,
-  elementIndexToFocus,
+  currentSlideIndex,
   customArrows,
   updateDataCallback,
   infinite = false,
+  itemsInSlide = 2,
 }) => {
   const {
     moveBack,
@@ -35,7 +37,14 @@ export const Carousel: FC<iCarousel> = ({
     arrowLeftRef,
     arrowRightRef,
     onScroll,
-  } = useCarousel({ elementIndexToFocus, updateDataCallback, infinite });
+    slides,
+  } = useCarousel({
+    currentSlideIndex,
+    updateDataCallback,
+    infinite,
+    children,
+    itemsInSlide,
+  });
   return (
     <div className={`Carousel ${className}`}>
       {!hideArrows && (
@@ -67,10 +76,18 @@ export const Carousel: FC<iCarousel> = ({
         onMouseUp={mouseUp}
         onMouseDown={mouseDown}
         onMouseMove={handleScroll}
-        onMouseLeave={mouseUp}
+        // onMouseLeave={mouseUp}
         onScroll={onScroll}
       >
-        {children}
+        {slides.map((slide, i) => (
+          <div
+            className="Carousel-slide"
+            style={{ minWidth: `${100 / itemsInSlide}%` }}
+            key={i}
+          >
+            {slide}
+          </div>
+        ))}
       </div>
     </div>
   );
