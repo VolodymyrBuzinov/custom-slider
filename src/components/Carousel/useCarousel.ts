@@ -114,16 +114,23 @@ export const useCarousel = ({
   const runScroll = (dx: number) => {
     const ref = contentRef.current;
     if (!ref) return;
+    if (state.current.transform > 0) return state.current.transform = 0
+
+    const maxWidth = ref.scrollWidth - ref.clientWidth
+    if (Math.abs(state.current.transform) > maxWidth) return state.current.transform = -maxWidth
+
+
 
     const offsetX = Math.min(
-      ref.scrollWidth - ref.clientWidth,
+      maxWidth,
       ref.scrollLeft + dx
     );
 
-    console.log(ref.clientWidth, "ref.clientWidth");
 
 
-    state.current.transform -= offsetX
+
+
+    state.current.transform -= (offsetX)
 
     ref.style.transform = `translateX(${state.current.transform}px)`;
   };
