@@ -71,7 +71,6 @@ export const Carousel: FC<iCarousel> = ({
       )}
       <div
         className="Carousel-content"
-        ref={contentRef}
         onDragStart={dragStart}
         onMouseUp={mouseUp}
         onMouseDown={mouseDown}
@@ -79,15 +78,17 @@ export const Carousel: FC<iCarousel> = ({
         // onMouseLeave={mouseUp}
         onScroll={onScroll}
       >
-        {slides.map((slide, i) => (
-          <div
-            className="Carousel-slide"
-            style={{ minWidth: `${100 / itemsInSlide}%` }}
-            key={i}
-          >
-            {slide}
-          </div>
-        ))}
+        <div className="Carousel-slides" ref={contentRef}>
+          {slides.map((slide, i) => (
+            <div
+              className="Carousel-slide"
+              style={{ minWidth: `${100 / itemsInSlide}%` }}
+              key={i}
+            >
+              {slide}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

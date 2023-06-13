@@ -10,6 +10,7 @@ interface iInitialState {
   lastMouseX: number | undefined;
   isMouseDown: boolean;
   isScrolling: boolean;
+  transform: number
 }
 
 interface iUseCarousel {
@@ -24,6 +25,7 @@ const initialState = {
   lastMouseX: undefined,
   isMouseDown: false,
   isScrolling: false,
+  transform: 0
 };
 
 export const useCarousel = ({
@@ -48,14 +50,19 @@ export const useCarousel = ({
 
   console.log(currentSlide, "currentSlide");
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   scrollToSlide();
+  // }, [currentSlide]);
+
+  const scrollToSlide = (slide?: number) => {
     const ref = contentRef.current;
-    if (!ref || slides[currentSlide * itemsInSlide] === undefined) return;
-    ref.children?.[currentSlide * itemsInSlide]?.scrollIntoView({
+    const slideIndex = slide || currentSlide * itemsInSlide;
+    if (!ref || slides[slideIndex] === undefined) return;
+    ref.children?.[slideIndex]?.scrollIntoView({
       inline: "start",
       behavior: "smooth",
     });
-  }, [currentSlide]);
+  };
 
   // useEffect(() => {
   //   if (!childrenAdded.current) {
@@ -92,14 +99,16 @@ export const useCarousel = ({
   //   };
   // }, [elementIndexToFocus]);
 
+
+
   const moveForward = () => {
-    if (currentSlide >= Math.floor((slides.length - 1) / itemsInSlide)) return;
-    setCurrentSlide(currentSlide + 1);
+    // if (currentSlide >= Math.floor((slides.length - 1) / itemsInSlide)) return;
+    // setCurrentSlide(currentSlide + 1);
   };
 
   const moveBack = () => {
-    if (currentSlide === 0) return;
-    setCurrentSlide(currentSlide - 1);
+    // if (currentSlide === 0) return;
+    // setCurrentSlide(currentSlide - 1);
   };
 
   const runScroll = (dx: number) => {
@@ -111,7 +120,12 @@ export const useCarousel = ({
       ref.scrollLeft + dx
     );
 
-    ref.scrollLeft = offsetX;
+    console.log(ref.clientWidth, "ref.clientWidth");
+
+
+    state.current.transform -= offsetX
+
+    ref.style.transform = `translateX(${state.current.transform}px)`;
   };
 
   const handleScroll = (e: React.MouseEvent) => {
@@ -134,20 +148,37 @@ export const useCarousel = ({
   };
 
   const mouseUp = (e: React.MouseEvent) => {
+    state.current.isMouseDown = false;
+    state.current.lastMouseX = undefined;
+    state.current.isScrolling = false;
+
+    const ref = contentRef.current;
+    if (!ref) return;
+
     let sum = 0;
+
     slides.forEach((item, i) => {
-      if (contentRef.current?.children[i])
-        sum += contentRef.current?.children[i].scrollWidth;
+      if (ref.children[i]) sum += ref.children[i].scrollWidth;
     });
 
     const slide = currentSlide + 1;
 
     const oneSlideWidth = (sum / slides.length) * itemsInSlide;
-    console.log(slide * oneSlideWidth, "oneSlideWidth");
 
-    state.current.isMouseDown = false;
-    state.current.lastMouseX = undefined;
-    state.current.isScrolling = false;
+    // if (ref.scrollLeft >= slide * oneSlideWidth * 0.2) {
+    //   if (currentSlide >= Math.floor((slides.length - 1) / itemsInSlide))
+    //     return;
+    //   setCurrentSlide((pv) => pv + 1);
+    // } else {
+
+    //   setCurrentSlide((pv) => (currentSlide === 0 ? 0 : pv - 1));
+    // }
+
+    const newState = state.current;
+
+    if (!newState.lastMouseX) return;
+    const dx = -(e.clientX - newState.lastMouseX);
+    console.log(dx);
   };
 
   const onScroll = () => {
